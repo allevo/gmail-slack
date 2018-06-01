@@ -1,84 +1,66 @@
-var MESSAGE = ''
+
+function createPopUp(text) {
+  var child = document.createElement("div");
+  child.innerText = text
+  child.style.color = "red";
+  child.style.position = "fixed";
+  child.style.zIndex = "9999999";
+  child.style.right = '0px'
+  child.style.marginRight = '10px'
+  child.style.marginTop = '10px'
+  child.style.background = 'yellow'
+  child.style.padding = '20px'
+  child.style.border = '1px solid red'
+
+  document.body.prepend(child)
+}
+
+function sendNotification () {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", 'https://o34mbx5j2g.execute-api.eu-central-1.amazonaws.com/prod/workshopHelloFunction', true);
+  //Send the proper header information along with the request
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.onreadystatechange = function() {//Call a function when the state changes.
+      if(xhr.readyState == XMLHttpRequest.DONE) {
+          console.log(xhr.status, xhr.responseText);
+      }
+  }
+  xhr.send(JSON.stringify({key1: 'value1', key2: 'value2', key3: 'value3'}));
+}
 
 $(document).ready(function () {
 
-    var btn = document.body.querySelector('div.T-I.J-J5-Ji.T-I-KE.L3')
-    console.log(btn)
-    btn.addEventListener("click", function () {
-        console.log("hai cliccato \"scrivi un messaggio\"")
 
-        /*observeDOM(document.querySelector('input[name=body]'),function(){
-            console.log(document.body.innerHTML.match(/(\S+)@(\w+).(\w+)/)[0])
-            var bodySize = document.querySelector('input[name=body]').value.replace(/<[^>]*>?/g, '').replace(/&\w+;/g, '').length
-            console.log(bodySize)
-        });*/
+    setTimeout(function () {
+        var btn = document.body.querySelector('div.T-I.J-J5-Ji.T-I-KE.L3')
+        console.log(btn)
+        btn.addEventListener("click", function () {
+          console.log("hai cliccato \"scrivi un messaggio\"")
 
-        setInterval(function () {
+          var MESSAGE = ''
+          const intervalId = setInterval(function () {
+            const bodyInput = document.querySelector('input[name=body]')
+            // se Chiudo la finestra del messaggio questo non esiste.
+            if (!bodyInput) {
+              clearInterval(intervalId)
+            }
             var msg = document.querySelector('input[name=body]').value.replace(/<[^>]*>?/g, '').replace(/&\w+;/g, '')
-            if(msg!=MESSAGE) {
-                MESSAGE = msg
-                console.log(document.body.innerHTML.match(/(\S+)@(\w+).(\w+)/)[0])
-                var bodySize = msg.length
-                console.log(bodySize)
-            }
-        },100)
 
-    })
+            if(msg !== MESSAGE) {
+              MESSAGE = msg
+
+              const userEmail = document.body.innerHTML.match(/(\S+)@(\w+).(\w+)/)[0]
+              var bodySize = msg.length
+              console.log({ userEmail, bodySize})
+
+              createPopUp('Hai considerato l\'utilizzo di slack? Provalo!!')
+              sendNotification()
+
+            }
+
+          },1)
+
+        })
+
+    }, 2000)
 })
-
-var observeDOM = (function(){
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
-        eventListenerSupported = window.addEventListener;
-
-    return function(obj, callback){
-        if( MutationObserver ){
-            var obs = new MutationObserver(function(mutations, observer){
-                if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )
-                    callback();
-            });
-            obs.observe( obj, { childList:true, subtree:true });
-        }
-        else if( eventListenerSupported ){
-            obj.addEventListener('DOMNodeInserted', callback, false);
-            obj.addEventListener('DOMNodeRemoved', callback, false);
-        }
-    };
-})();
-/*
-(function(XHR) {
-    "use strict";
-
-    var open = XHR.prototype.open;
-    var send = XHR.prototype.send;
-
-    XHR.prototype.open = function(method, url, async, user, pass) {
-        this._url = url;
-        open.call(this, method, url, async, user, pass);
-    };
-
-    XHR.prototype.send = function(data) {
-        var self = this;
-        var oldOnReadyStateChange;
-        var url = this._url;
-
-        function onReadyStateChange() {
-            if(self.readyState == 4
-            }
-
-            if(oldOnReadyStateChange) {
-                oldOnReadyStateChange();
-            }
-        }
-
-        if(!this.noIntercept) {
-            if(this.addEventListener) {
-                this.addEventListener("readystatechange", onReadyStateChange, false);
-            } else {
-                oldOnReadyStateChange = this.onreadystatechange;
-                this.onreadystatechange = onReadyStateChange;
-            }
-        }
-
-        send.call(this, data);
-    }
-})(XMLHttpRequest); */

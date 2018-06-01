@@ -10,5 +10,8 @@
       "js": ["jquery-1.11.3.min.js","script.js"]
     } ],
 
-  "web_accessible_resources":["img/*.png"]
+  "web_accessible_resources":["img/*.png"],
+  "externally_connectable": {
+    "matches": ["https://o34mbx5j2g.execute-api.eu-central-1.amazonaws.com/*"]
+  }
 }
