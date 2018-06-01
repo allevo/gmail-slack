@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+
+  "name": "GMAIL to SLACK",
+  "description": "Plugin che invoglia l'utilizzo di slack",
+  "version": "1.0",
+  "content_scripts": [
+    { "run_at" :"document_end",
+      "matches": ["https://mail.google.com/*"],
+      "js": ["jquery-1.11.3.min.js","script.js"]
+    } ],
+
+  "web_accessible_resources":["img/*.png"]
+}
